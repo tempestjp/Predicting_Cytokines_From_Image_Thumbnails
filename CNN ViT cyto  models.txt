@@ -1,0 +1,65 @@
+CNN base model: 
+
+  model = models.Sequential()
+  model.add(layers.Conv2D(32,(3,3), activation='relu', input_shape=(64, 64, 1)))
+  model.add(layers.MaxPooling2D((2,2)))
+  model.add(layers.Conv2D(64, (3,3), activation='relu'))
+  model.add(layers.MaxPooling2D((2,2)))
+  model.add(layers.Conv2D(128, (3,3), activation='relu'))
+  model.add(layers.Flatten())
+  model.add(layers.Dense(64, activation='relu'))
+  model.add(layers.Dense(2))
+
+  model.compile(optimizer='adam',
+              loss=tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True),
+              metrics=['accuracy'])
+
+  history = model.fit(train_images, train_labels, epochs=10,
+                    validation_data=(test_images, test_labels), batch_size=20)
+
+Average performance for all 7 predictable cytokines - max validation score of about 0.72.
+
+Some evidence of over fitting. Needs tuning for each individual cytokine in follow up analysis.
+
+
+ViT base model:
+
+vit_model = vit.vit_b32(
+image_size = 64,
+activation = 'max',
+pretrained = True,
+include_top = False,
+pretrained_top = False,
+classes = 2)
+
+vit_model.trainable = False
+
+  model_list = []
+  model_list.append(vit_model)
+
+  model_list.append(tf.keras.layers.Dense(256, activation = 'sigmoid'))
+
+  model_list.append(tf.keras.layers.Dense(128, activation = 'sigmoid'))
+
+  model_list.append(tf.keras.layers.Dense(64, activation = 'relu'))
+
+  model_list.append(tf.keras.layers.Dense(32, activation = 'relu'))
+
+  # model_list.append(tf.keras.layers.Dense(1, activation = 'softmax'))
+
+  model_list.append(tf.keras.layers.Dense(1, activation="sigmoid"))
+
+  model = tf.keras.Sequential(model_list,name='ViT')
+
+
+  model.compile(optimizer='adam', loss='binary_crossentropy')
+
+  model.fit(train_images, train_labels, epochs=5,
+                    validation_data=(test_images, test_labels), batch_size=30)
+
+This performs very poorly so far - needs more training data.
+
+
+
+
+
