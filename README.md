@@ -1,0 +1,1 @@
+This is a follow up to the previous project in the Prediction Cytokines From Embeddings repository. In this version of the project, a CNN and ViT are used to predict cytokine responses from low resolution images of the cellular membranes. For a more detailed summary, please read the pdf report and see the previous project.
